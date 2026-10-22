@@ -9,6 +9,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -57,6 +58,18 @@ public sealed class ItemDataCache(
 
     public FrozenDictionary<MongoId, HeadsetInfo> TemplateHeadsetInfo { get; private set; }
 
+    /// <summary>
+    /// Dictionary of armor stats per item.
+    /// Key = Item Template MongoID
+    /// </summary>
+    public FrozenDictionary<MongoId, ArmorItemSlim> TemplateArmorInfo { get; private set; }
+
+    /// <summary>
+    /// Dictionary of armor materials from globals.
+    /// Key = ArmorMaterial
+    /// </summary>
+    public FrozenDictionary<ArmorMaterial, ArmorMaterialSlim> ArmorMaterials { get; private set; }
+
     public Task OnLoad()
     {
         var watch = new Stopwatch();
@@ -73,6 +86,8 @@ public sealed class ItemDataCache(
         TemplateItemSlims = BuildTemplateItemSlims(items);
         TemplateBaseClasses = BuildTemplateBaseClasses();
         TemplateHeadsetInfo = BuildTemplateHeadsetInfo(headphones);
+        TemplateArmorInfo = BuildTemplateArmorInfo(items);
+        ArmorMaterials = BuildArmorMaterials();
         FleaPrices = BuildFleaPrices();
         ItemsWithHandbookEntry = BuildItemsWithHandbook(handbook);
         FleaBannedItems = BuildFleaBannedItems(items);
@@ -111,6 +126,29 @@ public sealed class ItemDataCache(
                 i.Value.Properties!.Distortion ?? 0.28d
             ))
             .ToFrozenDictionary(x => x.TemplateId);
+
+    private FrozenDictionary<MongoId, ArmorItemSlim> BuildTemplateArmorInfo(
+        Dictionary<MongoId, TemplateItem> items
+    ) =>
+        items
+            .Where(i => i.Value.Properties is { ArmorClass: > 0, ArmorMaterial: not null })
+            .Select(i => new ArmorItemSlim(
+                i.Key,
+                i.Value.Properties!.ArmorClass!.Value,
+                i.Value.Properties.ArmorMaterial!.Value,
+                i.Value.Properties.MaxDurability ?? 0d
+            ))
+            .ToFrozenDictionary(x => x.TemplateId);
+
+    private FrozenDictionary<ArmorMaterial, ArmorMaterialSlim> BuildArmorMaterials() =>
+        (db.GetGlobals().Configuration.ArmorMaterials ?? new()).ToFrozenDictionary(
+            k => k.Key,
+            v => new ArmorMaterialSlim(
+                v.Value.Destructibility,
+                v.Value.MinRepairDegradation,
+                v.Value.MaxRepairDegradation
+            )
+        );
 
     /// <summary>
     /// Ambient volume as the old mod displayed it: the four compressor send levels,
