@@ -40,16 +40,24 @@ public class Mod(
                 continue;
             }
 
-            var sections = new List<string>();
+            // One list per category. Categories are separated by a blank line,
+            // lines inside a category by a single newline.
+            var groups = new List<IReadOnlyList<string>>();
 
+            // Price
+            var price = new List<string>();
             if (config.ModPriceInfo.Enabled)
             {
-                Add(sections, templateItemUtils.GetLocalizedPricing(tplId));
+                Add(price, templateItemUtils.GetLocalizedPricing(tplId));
             }
+            groups.Add(price);
+
+            // Equipment / container stats
+            var gear = new List<string>();
 
             if (config.ModHeadsetInfo.Enabled)
             {
-                Add(sections, templateItemUtils.GetLocalizedHeadsetInfo(tplId));
+                Add(gear, templateItemUtils.GetLocalizedHeadsetInfo(tplId));
             }
 
             if (
@@ -57,7 +65,7 @@ public class Mod(
                 && templateItemUtils.GetLocalizedArmorInfo(tplId) is { } armor
             )
             {
-                Add(sections, armor.Description);
+                Add(gear, armor.Description);
 
                 if (config.ModArmorInfo.AddArmorToName)
                 {
@@ -72,8 +80,58 @@ public class Mod(
 
             if (config.ModContainerInfo.Enabled)
             {
-                Add(sections, templateItemUtils.GetLocalizedSlotRatio(tplId));
+                Add(gear, templateItemUtils.GetLocalizedSlotRatio(tplId));
             }
+
+            groups.Add(gear);
+
+            // Barters
+            var barters = new List<string>();
+
+            if (config.ModBarterInfo.Enabled)
+            {
+                barters.AddRange(templateItemUtils.GetLocalizedBarterResultList(tplId));
+            }
+
+            if (config.ModBarterResourceInfo.Enabled)
+            {
+                barters.AddRange(templateItemUtils.GetLocalizedBarterResourceList(tplId));
+            }
+
+            groups.Add(barters);
+
+            // Hideout requirements
+            var hideoutRequirements = new List<string>();
+
+            if (config.ModHideoutInfo.Enabled)
+            {
+                hideoutRequirements.AddRange(
+                    templateItemUtils.GetLocalizedHideoutAreaRequirement(tplId)
+                );
+                hideoutRequirements.AddRange(
+                    templateItemUtils.GetLocalizedHideoutAreaStageImprovementRequirement(tplId)
+                );
+            }
+
+            groups.Add(hideoutRequirements);
+
+            // Hideout crafts
+            var hideoutCrafts = new List<string>();
+
+            if (config.ModProductionInfo.Enabled)
+            {
+                hideoutCrafts.AddRange(templateItemUtils.GetLocalizedProduction(tplId));
+            }
+
+            if (config.ModCraftingMaterialInfo.Enabled)
+            {
+                hideoutCrafts.AddRange(templateItemUtils.GetLocalizedCraftingMaterial(tplId));
+            }
+
+            groups.Add(hideoutCrafts);
+
+            // Quests
+            var quests = new List<string>();
 
             if (config.ModQuestInfo.Enabled)
             {
@@ -81,7 +139,7 @@ public class Mod(
 
                 if (questLines.Count > 0)
                 {
-                    sections.AddRange(questLines);
+                    quests.AddRange(questLines);
 
                     if (
                         config.ModQuestInfo.FirInName
@@ -98,33 +156,9 @@ public class Mod(
                 }
             }
 
-            if (config.ModHideoutInfo.Enabled)
-            {
-                sections.AddRange(templateItemUtils.GetLocalizedHideoutAreaRequirement(tplId));
-                sections.AddRange(
-                    templateItemUtils.GetLocalizedHideoutAreaStageImprovementRequirement(tplId)
-                );
-            }
+            groups.Add(quests);
 
-            if (config.ModBarterInfo.Enabled)
-            {
-                sections.AddRange(templateItemUtils.GetLocalizedBarterResultList(tplId));
-            }
-
-            if (config.ModProductionInfo.Enabled)
-            {
-                sections.AddRange(templateItemUtils.GetLocalizedProduction(tplId));
-            }
-
-            if (config.ModCraftingMaterialInfo.Enabled)
-            {
-                sections.AddRange(templateItemUtils.GetLocalizedCraftingMaterial(tplId));
-            }
-
-            if (config.ModBarterResourceInfo.Enabled)
-            {
-                sections.AddRange(templateItemUtils.GetLocalizedBarterResourceList(tplId));
-            }
+            var sections = groups.Where(g => g.Count > 0).ToList();
 
             if (sections.Count == 0)
             {
@@ -134,7 +168,7 @@ public class Mod(
             localeChanged.Add(
                 new KeyValuePair<string, string>(
                     $"{tplId} Description",
-                    string.Join("\n", sections)
+                    string.Join("\n\n", sections.Select(g => string.Join("\n", g)))
                 )
             );
         }
