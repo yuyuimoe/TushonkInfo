@@ -106,10 +106,20 @@ public class LocalizationService(
     public string GetQuestName(MongoId tpl, string locale) =>
         GetGameTranslation(tpl + " name", locale);
 
-    public string GetHideoutName(HideoutAreas area, string locale) =>
-        area == HideoutAreas.NotSet
-            ? GetTranslation("UNKNOWN")
-            : GetGameTranslation($"hideout_area_{area}_name", locale);
+    public string GetHideoutName(HideoutAreas area, string locale)
+    {
+        if (area == HideoutAreas.NotSet)
+        {
+            return GetTranslation("UNKNOWN");
+        }
+
+        // The game locale keys use the numeric area id (hideout_area_2_name),
+        // not the enum name.
+        var key = $"hideout_area_{(int)area}_name";
+        var name = GetGameTranslation(key, locale);
+
+        return name == key ? area.ToString() : name;
+    }
 
     public string GetGameTranslation(string key, string lang) =>
         GetLocaleDb(lang).GetValueOrDefault(key, key);
