@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="src\ItemInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="src\Expressions\" />
   </ItemGroup>
 
