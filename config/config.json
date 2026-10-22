@@ -124,14 +124,14 @@
 		"FIRinName": true
 	},
 	"QuestLinks": {
-		"_description": "Appends to every quest description where the quest came from and which quests it unlocks, with the level, trader loyalty and quests required to unlock them. Markers are language neutral, any text/icon works. maxRequiredQuests limits long prerequisite lists (0 = no limit).",
-		"_example": "🔓 Gunsmith - Part 2 (🪖 10, Mechanic 👑 2, ✔️ Gunsmith - Part 1)\n⏮️ Gunsmith - Part 1",
+		"_description": "Appends to every quest description where the quest came from and which quests it unlocks, with the level, trader loyalty and quests required to unlock them. Markers are configurable and language neutral: use glyphs the game font renders (↺ « ★ ☆ ✔ », ↻ ∈ Σ Δ ≈ … are safe; emojis are not). maxRequiredQuests limits long prerequisite lists (0 = no limit).",
+		"_example": "↺ Shady Business (★ 20, Mechanic ☆ 2, ✔ Gunsmith - Part 1)\n« Gunsmith - Part 1",
 		"enabled": true,
-		"unlocked": "🔓",
-		"previous": "⏮️",
-		"level": "🪖",
-		"loyalty": "👑",
-		"required": "✔️",
+		"unlocked": "↺",
+		"previous": "«",
+		"level": "★",
+		"loyalty": "☆",
+		"required": "✔",
 		"maxRequiredQuests": 8
 	},
 	"HideoutInfo": {

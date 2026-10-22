@@ -138,15 +138,15 @@ public class ModConfig
 		[JsonPropertyName("enabled")]
 		public bool Enabled { get; set; } = true;
 		[JsonPropertyName("unlocked")]
-		public string Unlocked { get; set; } = "🔓";
+		public string Unlocked { get; set; } = "↺";
 		[JsonPropertyName("previous")]
-		public string Previous { get; set; } = "⏮️";
+		public string Previous { get; set; } = "«";
 		[JsonPropertyName("level")]
-		public string Level { get; set; } = "🪖";
+		public string Level { get; set; } = "★";
 		[JsonPropertyName("loyalty")]
-		public string Loyalty { get; set; } = "👑";
+		public string Loyalty { get; set; } = "☆";
 		[JsonPropertyName("required")]
-		public string Required { get; set; } = "✔️";
+		public string Required { get; set; } = "✔";
 		[JsonPropertyName("maxRequiredQuests")]
 		public int MaxRequiredQuests { get; set; } = 8;
 	}
