@@ -123,6 +123,17 @@
 		"enabled": true,
 		"FIRinName": true
 	},
+	"QuestLinks": {
+		"_description": "Appends to every quest description where the quest came from and which quests it unlocks, with the level, trader loyalty and quests required to unlock them. Markers are language neutral, any text/icon works. maxRequiredQuests limits long prerequisite lists (0 = no limit).",
+		"_example": "🔓 Gunsmith - Part 2 (🪖 10, Mechanic 👑 2, ✔️ Gunsmith - Part 1)\n⏮️ Gunsmith - Part 1",
+		"enabled": true,
+		"unlocked": "🔓",
+		"previous": "⏮️",
+		"level": "🪖",
+		"loyalty": "👑",
+		"required": "✔️",
+		"maxRequiredQuests": 8
+	},
 	"HideoutInfo": {
 		"_description": "Shows if item is needed for hideout construcion.",
 		"_example": "[Secure Flash drive] » ×3 > Intelligence Center lv.2",

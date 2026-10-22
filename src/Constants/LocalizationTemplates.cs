@@ -31,6 +31,17 @@ public static class LocalizationTemplates
     public const string QuestRewardItem =
         "(mark)(questName) (questGiver) @ (traderName) {lv}(loyaltyLevel)";
 
+    /// <summary>
+    /// Quest relationships. (mark) values come from the QuestLinks config section.
+    /// </summary>
+    public const string QuestUnlockLine = "(mark)(questName) ((requirements))";
+    public const string QuestUnlockLineNoRequirements = "(mark)(questName)";
+    public const string QuestPreviousLine = "(mark)(questName)";
+    public const string QuestLevelRequirement = "(mark)(level)";
+    public const string QuestTraderRequirement = "(traderName) (mark)(level)";
+    public const string QuestRequiredQuests = "(mark)(quests)";
+    public const string QuestMore = "(mark)… (+(count))";
+
     // Hideout
     public const string HideoutAreaLevel = "(area) {lv}(requiredLevel)";
     public const string HideoutAreaRequirement = "(mark)×(count) > (area) {lv}(level)";

@@ -171,7 +171,10 @@ public class LocalizationService(
     /// regardless of the language their client requests (the text itself is built
     /// in <see cref="GetUserLocale"/>).
     /// </summary>
-    public void UpsertLocaleTransformer(List<KeyValuePair<string, string>> newLocales)
+    public void UpsertLocaleTransformer(
+        List<KeyValuePair<string, string>> newLocales,
+        bool prepend = true
+    )
     {
         if (newLocales.Count == 0)
         {
@@ -180,24 +183,26 @@ public class LocalizationService(
 
         foreach (var (_, locales) in dbService.GetLocales().Global)
         {
-            AppendLocales(locales, newLocales);
+            AppendLocales(locales, newLocales, prepend);
         }
     }
 
     public void UpsertLocaleTransformer(
         List<KeyValuePair<string, string>> newLocales,
-        string locale
+        string locale,
+        bool prepend = true
     )
     {
         if (dbService.GetLocales().Global.TryGetValue(locale, out var locales))
         {
-            AppendLocales(locales, newLocales);
+            AppendLocales(locales, newLocales, prepend);
         }
     }
 
     private static void AppendLocales(
         LazyLoad<Dictionary<string, string>> locales,
-        List<KeyValuePair<string, string>> newLocales
+        List<KeyValuePair<string, string>> newLocales,
+        bool prepend
     ) =>
         locales.AddTransformer(l =>
         {
@@ -205,7 +210,7 @@ public class LocalizationService(
             {
                 if (l.TryGetValue(k, out var existing))
                 {
-                    l[k] = v + "\n" + existing;
+                    l[k] = prepend ? v + "\n" + existing : existing + "\n" + v;
                 }
                 else
                 {

@@ -15,6 +15,8 @@ public class Mod(
     ISptLogger<Mod> logger,
     TemplateItemUtils templateItemUtils,
     ItemDataCache itemDataCache,
+    QuestCache questCache,
+    QuestUtils questUtils,
     LocalizationService localizationService
 ) : IOnLoad
 {
@@ -173,13 +175,34 @@ public class Mod(
             );
         }
 
+        var questDescriptions = new List<KeyValuePair<string, string>>();
+
+        if (config.ModQuestLinks.Enabled)
+        {
+            foreach (var questId in questCache.QuestUnlockRequirements.Keys)
+            {
+                var lines = questUtils.GetLocalizedQuestLinks(questId);
+
+                if (lines.Count > 0)
+                {
+                    questDescriptions.Add(
+                        new KeyValuePair<string, string>(
+                            $"{questId} description",
+                            string.Join("\n", lines)
+                        )
+                    );
+                }
+            }
+        }
+
         localizationService.UpsertLocaleTransformer(localeChanged);
+        localizationService.UpsertLocaleTransformer(questDescriptions, prepend: false);
         localizationService.UpsertSuffixes(nameSuffixes);
         localizationService.UpsertSuffixes(shortNameSuffixes, "ShortName");
 
         stopWatch.Stop();
         logger.Info(
-            $"[ItemInfo] Built {localeChanged.Count} item descriptions in {stopWatch.ElapsedMilliseconds}ms"
+            $"[ItemInfo] Built {localeChanged.Count} item and {questDescriptions.Count} quest descriptions in {stopWatch.ElapsedMilliseconds}ms"
         );
         return Task.CompletedTask;
     }

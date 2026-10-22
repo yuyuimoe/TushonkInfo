@@ -131,6 +131,26 @@ public class ModConfig
 		public bool FirInName {get; set;}
 	}
 	
+	[JsonPropertyName("QuestLinks")]
+	public QuestLinks ModQuestLinks { get; set; } = new();
+	public class QuestLinks
+	{
+		[JsonPropertyName("enabled")]
+		public bool Enabled { get; set; } = true;
+		[JsonPropertyName("unlocked")]
+		public string Unlocked { get; set; } = "🔓";
+		[JsonPropertyName("previous")]
+		public string Previous { get; set; } = "⏮️";
+		[JsonPropertyName("level")]
+		public string Level { get; set; } = "🪖";
+		[JsonPropertyName("loyalty")]
+		public string Loyalty { get; set; } = "👑";
+		[JsonPropertyName("required")]
+		public string Required { get; set; } = "✔️";
+		[JsonPropertyName("maxRequiredQuests")]
+		public int MaxRequiredQuests { get; set; } = 8;
+	}
+
 	[JsonPropertyName("HideoutInfo")]
 	public HideoutInfo ModHideoutInfo { get; set; } = new();
 	public class HideoutInfo
