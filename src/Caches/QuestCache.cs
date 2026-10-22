@@ -2,6 +2,7 @@ using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using ItemInfo.Caches.Models;
+using ItemInfo.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
@@ -115,6 +116,7 @@ public sealed class QuestCache(ISptLogger<QuestCache> logger, DatabaseService db
     > BuildTemplateQuestRewards(Dictionary<MongoId, Quest> quests) =>
         quests
             .SelectMany(q => ExpandRewards(q.Value, q.Key))
+            .Where(r => !r.TemplateId.IsMoney())
             .GroupBy(r => r.TemplateId)
             .ToFrozenDictionary(g => g.Key, g => g.ToImmutableArray());
 

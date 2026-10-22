@@ -2,6 +2,7 @@ using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using ItemInfo.Caches.Models;
+using ItemInfo.Extensions;
 using ItemInfo.Utils;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -310,6 +311,9 @@ public sealed class TraderCache(
                     )
                 )
             )
+            // Currency is a price, not a barter resource: skipping it keeps the
+            // money items (and every money-only purchase) out of the index.
+            .Where(x => !x.tpl.IsMoney())
             .GroupBy(x => x.tpl, x => x.btr)
             .ToFrozenDictionary(
                 g => g.Key,
