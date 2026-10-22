@@ -1,6 +1,9 @@
 # ODT-ItemInfo
 Massive QOL Item Info mod for SPTarkov.
-English only (for now).
+
+The display language is set with `UserLocale` in `config/config.json` and works with every locale shipped in the game (en, ru, ch, cz, es, es-mx, fr, ge, hu, it, jp, kr, pl, po, sk, tu). Item, quest, trader and hideout area names come from the game locale, so they follow the same setting.
+
+> **3.1.0 status:** rewritten for SPT 4.0. Current modules: prices, barters, barter resources, production, crafting materials, hideout, quests (item requirements + quest links), armor, containers and headsets. Rarity Recolor, Mark Valuable Items, Bullet Stats In Name, Spawn Info and Advanced Ammo Info are not ported yet and their config sections are ignored.
 
 
 # Features: 
@@ -58,11 +61,11 @@ Shows info if an item can be traded for something with traders along with other 
 
 ## Quest Info
 Adds information if the item needs to be handed in for a quest. Marks find in raid quest condition with a checkmark with an option to add this checkmark to an item name.
-> [CMS surgical kit] Found (✔) ×2 > Ambulance @ Jaeger
+> [CMS surgical kit] » FIR ×2 > Ambulance @ Jaeger
 
 ## Hideout Info
 Shows if item is needed for hideout construcion.
-> [Secure Flash drive] Need ×3 > Intelligence Center lv.2
+> [Secure Flash drive] » ×3 > Intelligence Center lv.2
 
 ## Armor Info
 Adds armor stats for armor level (usefull for Realism mod), effective durability calculation, material quality and per repair degradation.
@@ -80,3 +83,9 @@ Adds headset actual audio stats with pseudo compression boost calculation. In th
 
 ## Spawn Info
 Shows pseudo spawn info based on BSG handbook data. Mildly useful, not representative to real spawns, can be safely disabled.
+
+## Quest Links
+Adds to every quest description where the quest came from and which quests it unlocks, with the level, trader loyalty and prerequisite quests needed to unlock each follow-up. Markers are configurable in the `QuestLinks` section of `config.json`.
+
+> ↺ Shady Business (★ 20, ✔ What's on the Flash Drive?, Acquaintance)
+> « Introduction

@@ -477,3 +477,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+
+# build artifact from the Release staging target
+/F:/
+# IDE
+/.idea/
