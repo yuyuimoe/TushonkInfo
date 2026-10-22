@@ -143,7 +143,9 @@ public sealed class HideoutCache(ISptLogger<HideoutCache> logger, DatabaseServic
                         tpl: sr.TemplateId,
                         area: new StageRequirementSlim(
                             asr.Key.Item1,
-                            (HideoutAreas?)sr.AreaType ?? HideoutAreas.NotSet,
+                            // Stage requirements do not carry their area type,
+                            // resolve it from the area id of the parent stage.
+                            AreaTypeById.GetValueOrDefault(asr.Key.Item1, HideoutAreas.NotSet),
                             asr.Key.Item2,
                             sr.TemplateId,
                             sr.Count ?? 1

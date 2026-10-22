@@ -263,7 +263,7 @@ public class TemplateItemUtils(
                 line.AddData(
                     "area",
                     hideoutAreaNames.GetValueOrDefault(
-                        hideoutCache.AreaTypeById[a.AreaId],
+                        hideoutCache.AreaTypeById.GetValueOrDefault(a.AreaId, HideoutAreas.NotSet),
                         localizationService.GetTranslation("UNKNOWN")
                     )
                 );
