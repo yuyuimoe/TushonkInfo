@@ -45,6 +45,12 @@ public sealed class ItemDataCache(
 
     public FrozenSet<MongoId> ItemsWithHandbookEntry { get; private set; }
 
+    /// <summary>
+    /// Items that cannot be sold on the flea market, either by flag
+    /// (CanSellOnRagfair) or by the BSG static blacklist.
+    /// </summary>
+    public FrozenSet<MongoId> FleaBannedItems { get; private set; }
+
     public FrozenDictionary<MongoId, double> InnerOuterSlotRatios { get; private set; }
 
     public FrozenDictionary<MongoId, FrozenSet<MongoId>> TemplateBaseClasses { get; private set; }
@@ -69,6 +75,7 @@ public sealed class ItemDataCache(
         TemplateHeadsetInfo = BuildTemplateHeadsetInfo(headphones);
         FleaPrices = BuildFleaPrices();
         ItemsWithHandbookEntry = BuildItemsWithHandbook(handbook);
+        FleaBannedItems = BuildFleaBannedItems(items);
         HandbookPrices = BuildHandbookPrices(handbook);
         InnerOuterSlotRatios = BuildSlotRatio();
         TemplateBestTraderPrice = BuildBestTraderPrice();
@@ -97,14 +104,32 @@ public sealed class ItemDataCache(
         headphones
             .Select(i => new HeadsetInfo(
                 i.Key,
-                i.Value.Properties!.AmbientCompressorSendLevel ?? -13d,
-                i.Value.Properties!.AmbientVolume ?? -5d,
+                BuildAmbientVolume(i.Value.Properties!),
                 i.Value.Properties!.CompressorAttack ?? 35d,
                 i.Value.Properties!.CompressorGain ?? 10d,
                 i.Value.Properties!.CompressorThreshold ?? -20d,
                 i.Value.Properties!.Distortion ?? 0.28d
             ))
             .ToFrozenDictionary(x => x.TemplateId);
+
+    /// <summary>
+    /// Ambient volume as the old mod displayed it: the four compressor send levels,
+    /// re-based to their neutral values.
+    /// </summary>
+    private static double BuildAmbientVolume(TemplateItemProperties properties) =>
+        Math.Round(
+            (
+                (properties.AmbientCompressorSendLevel ?? -10d)
+                + 10d
+                + (properties.EffectsReturnsGrEnvCommonCompressorSendLeveloupVolume ?? -7d)
+                + 7d
+                + (properties.EnvNatureCompressorSendLevel ?? -5d)
+                + 5d
+                + (properties.EnvTechnicalCompressorSendLevel ?? -7d)
+                + 7d
+            ),
+            1
+        );
 
     private FrozenDictionary<MongoId, FrozenSet<MongoId>> BuildTemplateBaseClasses() =>
         TemplateItemSlims.ToFrozenDictionary(
@@ -121,6 +146,22 @@ public sealed class ItemDataCache(
     private FrozenSet<MongoId> BuildItemsWithHandbook(List<HandbookItem> handbookItems) =>
         handbookItems.Select(hi => hi.Id).ToFrozenSet();
 
+    private FrozenSet<MongoId> BuildFleaBannedItems(Dictionary<MongoId, TemplateItem> items)
+    {
+        if (ConfigurationService.Config.UseBsgStaticFleaBanList.Enabled)
+        {
+            return ConfigurationService
+                .BsgBlackList.BsgBlackList.Where(MongoId.IsValidMongoId)
+                .Select(id => new MongoId(id))
+                .ToFrozenSet();
+        }
+
+        return items
+            .Where(i => i.Value.Properties?.CanSellOnRagfair == false)
+            .Select(i => i.Key)
+            .ToFrozenSet();
+    }
+
     private FrozenDictionary<MongoId, double> BuildHandbookPrices(
         List<HandbookItem> handbookItems
     ) => handbookItems.ToFrozenDictionary(k => k.Id, v => v.Price ?? 0);
@@ -132,10 +173,13 @@ public sealed class ItemDataCache(
                 k => k.Key,
                 v =>
                 {
-                    var isc = v.Value.Grids.Sum(x =>
-                        x.Properties?.CellsH * x.Properties?.CellsV ?? 0
+                    var cells = v.Value.Width * v.Value.Height;
+                    var innerSlots = v.Value.Grids.Sum(x =>
+                        (x.Properties?.CellsH ?? 0) * (x.Properties?.CellsV ?? 0)
                     );
-                    return isc == 0 ? 0 : (double)(v.Value.Height * v.Value.Width) / isc;
+
+                    // Inner slots per outer cell: > 1 means the container creates space
+                    return cells == 0 ? 0 : (double)innerSlots / cells;
                 }
             );
 
