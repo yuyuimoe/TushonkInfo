@@ -210,7 +210,8 @@ public class LocalizationService(
             {
                 if (l.TryGetValue(k, out var existing))
                 {
-                    l[k] = prepend ? v + "\n" + existing : existing + "\n" + v;
+                    // Blank line between our block and the original text
+                    l[k] = prepend ? v + "\n\n" + existing : existing + "\n\n" + v;
                 }
                 else
                 {
