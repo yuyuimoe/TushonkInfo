@@ -124,7 +124,6 @@
 		"AsPartOf": "作為一部分"
 	},
 	"cz": {
-		"": "",
 		"": ""
 	},
 	"es-mx": {
@@ -292,11 +291,9 @@
 		"AsPartOf": "Als Teil von"
 	},
 	"hu": {
-		"": "",
 		"": ""
 	},
 	"it": {
-		"": "",
 		"": ""
 	},
 	"jp": {
@@ -381,19 +378,38 @@
 		"AsPartOf": "의 일부로"
 	},
 	"pl": {
-		"": "",
 		"": ""
 	},
 	"po": {
-		"": "",
-		"": ""
+		"Bought": "Comprado",
+		"ItemValue": "Valor do item",
+		"lv": "nv.",
+		"at": "com",
+		"Traded": "Trocado",
+		"Armorclass": "Classe de proteção",
+		"Effectivedurability": "Durabilidade efetiva",
+		"Max": "Máx.",
+		"Repairdegradation": "Degradação por reparo",
+		"Slotefficiency": "Eficiência de slots",
+		"Fleaprice": "Preço no flea",
+		"Valuation1": "Avaliação de ",
+		"Valuation2": "",
+		"Found": "Encontrado",
+		"Tool": "Ferramenta",
+		"Part": "Peça",
+		"Need": "Necessário",
+		"Crafted": "Fabricado",
+		"peritem": "por item",
+		"AmbientVolume": "Volume ambiente",
+		"Boost": "Reforço",
+		"Distortion": "Distorção",
+		"UNKNOWN": "Desconhecido",
+		"BANNED": "PROIBIDO"
 	},
 	"sk": {
-		"": "",
 		"": ""
 	},
 	"tu": {
-		"": "",
 		"": ""
 	}
 }

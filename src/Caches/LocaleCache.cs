@@ -42,7 +42,11 @@ public sealed class LocaleCache(
             var watch = new Stopwatch();
             watch.Start();
 
-            var languages = db.GetLocales().Languages.ToFrozenDictionary();
+            var languages = db.GetLocales()
+                .Languages.Where(l =>
+                    l.Key == ConfigurationService.Config.UserLocale || l.Key == "en"
+                )
+                .ToFrozenDictionary();
             var itemKeySet = db.GetItems().Keys.ToFrozenSet();
             var traderKeySet = db.GetTraders().Keys.ToFrozenSet();
             var questKeySet = db.GetQuests().Keys.ToFrozenSet();

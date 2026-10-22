@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+using System.Collections.Concurrent;
+using System.Text.Json;
 using ItemInfo.Constants;
 using ItemInfo.Models;
 using SPTarkov.DI.Annotations;
@@ -8,6 +9,7 @@ using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Json;
 
 namespace ItemInfo.Services;
 
@@ -20,11 +22,15 @@ public class LocalizationService(
 ) : IOnLoad
 {
     private static ModTranslation? AllLocales { get; set; }
-    private Dictionary<string, string> CachedLocaleDatabase { get; set; }
+
+    /// <summary>
+    /// Game locale database per language, fetched once. Kept as a map because
+    /// LocaleService.GetLocaleDb() may walk the lazy loaded locale lists.
+    /// </summary>
+    private readonly ConcurrentDictionary<string, Dictionary<string, string>> _localeDbs = new();
 
     public async Task OnLoad()
     {
-        CachedLocaleDatabase = localeService.GetLocaleDb();
         var translationFile = await jsonUtil.DeserializeFromFileAsync<ModTranslation>(
             ModPath.TranslationFile
         );
@@ -37,6 +43,7 @@ public class LocalizationService(
             );
             return;
         }
+
         AllLocales = translationFile;
 
         foreach (
@@ -49,27 +56,46 @@ public class LocalizationService(
         }
     }
 
+    /// <summary>
+    /// Mod translation for a key: user locale first, then english, then the key itself.
+    /// </summary>
     public bool TryGetKey(string key, out string localized)
     {
+        if (AllLocales is null)
+        {
+            localized = key;
+            return false;
+        }
+
+        var userLocale = GetUserLocale;
         if (
-            !AllLocales.Language.TryGetValue(ConfigurationService.Config.UserLocale, out var locale)
+            AllLocales.Language.TryGetValue(userLocale, out var locale)
+            && locale.TryGetValue(key, out var value)
         )
         {
-            logger.Warning(
-                $"Tried to fetch localization for key {key}, but the mod is running an unknown translation. Did you change to an invalid locale?"
-            );
-            localized = key;
-            return false;
+            localized = value;
+            return true;
         }
 
-        if (!locale.TryGetValue(key, out localized))
+        if (
+            AllLocales.Language.TryGetValue("en", out var english)
+            && english.TryGetValue(key, out var englishValue)
+        )
         {
-            localized = key;
-            return false;
+            logger.Debug($"Missing key {key} for locale {userLocale}, using english");
+            localized = englishValue;
+            return true;
         }
 
-        return true;
+        logger.Debug($"Missing key {key} for locale {userLocale} and english");
+        localized = key;
+        return false;
     }
+
+    private static string GetUserLocale => ConfigurationService.Config.UserLocale;
+
+    public string GetItemName(MongoId? tpl, string locale) =>
+        tpl is null ? string.Empty : GetGameTranslation(tpl + " Name", locale);
 
     public string GetItemShortName(MongoId? tpl, string locale) =>
         tpl is null ? string.Empty : GetGameTranslation(tpl + " ShortName", locale);
@@ -82,16 +108,16 @@ public class LocalizationService(
 
     public string GetHideoutName(HideoutAreas area, string locale) =>
         area == HideoutAreas.NotSet
-            ? "UNKNOWN AREA"
+            ? GetTranslation("UNKNOWN")
             : GetGameTranslation($"hideout_area_{area}_name", locale);
 
-    public string GetGameTranslation(string key, string lang)
-    {
-        return CachedLocaleDatabase.GetValueOrDefault(key, key);
-    }
+    public string GetGameTranslation(string key, string lang) =>
+        GetLocaleDb(lang).GetValueOrDefault(key, key);
 
-    public string GetTranslation(string key) =>
-        GetTranslation(key, ConfigurationService.Config.UserLocale);
+    private Dictionary<string, string> GetLocaleDb(string lang) =>
+        _localeDbs.GetOrAdd(lang, l => localeService.GetLocaleDb(l));
+
+    public string GetTranslation(string key) => GetTranslation(key, GetUserLocale);
 
     public string GetTranslation(string key, string lang)
     {
@@ -115,12 +141,14 @@ public class LocalizationService(
                 );
                 return GetTranslation(key, "en");
             }
+
+            return name;
         }
 
         if (!AllLocales.Language["en"].TryGetValue(key, out name))
         {
             logger.Debug(
-                $"Failed to find key for locale in English. Falling back to debug information"
+                "Failed to find key for locale in English. Falling back to debug information"
             );
             return "GetLocalization() unknown locale " + key;
         }
@@ -128,19 +156,39 @@ public class LocalizationService(
         return name;
     }
 
-    public void UpsertLocaleTransformer(List<KeyValuePair<string, string>> newLocales) =>
-        UpsertLocaleTransformer(newLocales, ConfigurationService.Config.UserLocale);
+    /// <summary>
+    /// Injects the generated texts into every game locale, so players see them
+    /// regardless of the language their client requests (the text itself is built
+    /// in <see cref="GetUserLocale"/>).
+    /// </summary>
+    public void UpsertLocaleTransformer(List<KeyValuePair<string, string>> newLocales)
+    {
+        if (newLocales.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var (_, locales) in dbService.GetLocales().Global)
+        {
+            AppendLocales(locales, newLocales);
+        }
+    }
 
     public void UpsertLocaleTransformer(
         List<KeyValuePair<string, string>> newLocales,
         string locale
     )
     {
-        if (!dbService.GetLocales().Global.TryGetValue(locale, out var locales))
+        if (dbService.GetLocales().Global.TryGetValue(locale, out var locales))
         {
-            return;
+            AppendLocales(locales, newLocales);
         }
+    }
 
+    private static void AppendLocales(
+        LazyLoad<Dictionary<string, string>> locales,
+        List<KeyValuePair<string, string>> newLocales
+    ) =>
         locales.AddTransformer(l =>
         {
             foreach (var (k, v) in newLocales)
@@ -156,5 +204,37 @@ public class LocalizationService(
             }
             return l;
         });
+
+    /// <summary>
+    /// Appends a suffix to every "&lt;tpl&gt; &lt;keySuffix&gt;" entry ("Name", "ShortName", ...).
+    /// Applied to every language (the suffix is language neutral), matching the
+    /// previous behaviour.
+    /// </summary>
+    public void UpsertSuffixes(
+        IReadOnlyDictionary<MongoId, string> suffixes,
+        string keySuffix = "Name"
+    )
+    {
+        if (suffixes.Count == 0)
+        {
+            return;
+        }
+
+        var globalLocales = dbService.GetLocales().Global;
+        foreach (var (lang, locales) in globalLocales)
+        {
+            locales.AddTransformer(l =>
+            {
+                foreach (var (tpl, suffix) in suffixes)
+                {
+                    var key = $"{tpl} {keySuffix}";
+                    if (l.TryGetValue(key, out var name))
+                    {
+                        l[key] = name + suffix;
+                    }
+                }
+                return l;
+            });
+        }
     }
 }
