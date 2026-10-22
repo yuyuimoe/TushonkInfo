@@ -45,6 +45,22 @@ public sealed class QuestCache(ISptLogger<QuestCache> logger, DatabaseService db
         private set;
     }
 
+    /// <summary>
+    /// Conditions needed to start a quest (level, trader loyalty, required quests).
+    /// Key = Quest MongoID
+    /// </summary>
+    public FrozenDictionary<MongoId, QuestUnlockRequirementSlim> QuestUnlockRequirements
+    {
+        get;
+        private set;
+    }
+
+    /// <summary>
+    /// Reverse of QuestUnlockRequirements.RequiredQuests: the quests a quest unlocks.
+    /// Key = prerequisite Quest MongoID
+    /// </summary>
+    public FrozenDictionary<MongoId, ImmutableArray<MongoId>> QuestsUnlocked { get; private set; }
+
     public async Task OnLoad()
     {
         await Task.Run(() =>
@@ -57,6 +73,8 @@ public sealed class QuestCache(ISptLogger<QuestCache> logger, DatabaseService db
             TemplateQuestRequirements = BuildTemplateQuestRequirements(quests);
             TemplateQuestRewards = BuildTemplateQuestRewards(quests);
             TemplateQuestUnlocks = BuildTemplateQuestUnlocks(quests);
+            QuestUnlockRequirements = BuildQuestUnlockRequirements(quests);
+            QuestsUnlocked = BuildQuestsUnlocked();
 
             watch.Stop();
             logger.Info($"Quest Cache loaded in {watch.ElapsedMilliseconds}ms");
@@ -100,6 +118,55 @@ public sealed class QuestCache(ISptLogger<QuestCache> logger, DatabaseService db
     /// </summary>
     public MongoId GetQuestTrader(MongoId questId) =>
         db.GetQuests().TryGetValue(questId, out var quest) ? quest.TraderId : MongoId.Empty();
+
+    /// <summary>
+    /// Quests that must be completed before the given quest is available.
+    /// </summary>
+    public ImmutableArray<MongoId> GetQuestPrerequisites(MongoId questId) =>
+        QuestUnlockRequirements.TryGetValue(questId, out var requirement)
+            ? requirement.RequiredQuests
+            : [];
+
+    /// <summary>
+    /// Quests unlocked by the given quest.
+    /// </summary>
+    public ImmutableArray<MongoId> GetUnlockedQuests(MongoId questId) =>
+        QuestsUnlocked.TryGetValue(questId, out var unlocked) ? unlocked : [];
+
+    private static FrozenDictionary<
+        MongoId,
+        QuestUnlockRequirementSlim
+    > BuildQuestUnlockRequirements(Dictionary<MongoId, Quest> quests) =>
+        quests.ToFrozenDictionary(
+            q => q.Key,
+            q =>
+            {
+                var conditions = q.Value.Conditions?.AvailableForStart ?? [];
+
+                var level = conditions.FirstOrDefault(c => c.ConditionType == "Level");
+                var loyalty = conditions.FirstOrDefault(c => c.ConditionType == "TraderLoyalty");
+                var requiredQuests = conditions
+                    .Where(c => c.ConditionType == "Quest" && c.Target?.Item is not null)
+                    .Select(c => AsMongoId(c.Target!.Item))
+                    .Distinct()
+                    .ToImmutableArray();
+
+                return new QuestUnlockRequirementSlim(
+                    (int)(level?.Value ?? 0d),
+                    AsMongoId(loyalty?.Target?.Item),
+                    (int)(loyalty?.Value ?? 0d),
+                    requiredQuests
+                );
+            }
+        );
+
+    private FrozenDictionary<MongoId, ImmutableArray<MongoId>> BuildQuestsUnlocked() =>
+        QuestUnlockRequirements
+            .SelectMany(kvp =>
+                kvp.Value.RequiredQuests.Select(required => (required, quest: kvp.Key))
+            )
+            .GroupBy(x => x.required, x => x.quest)
+            .ToFrozenDictionary(g => g.Key, g => g.ToImmutableArray());
 
     private static FrozenDictionary<
         MongoId,

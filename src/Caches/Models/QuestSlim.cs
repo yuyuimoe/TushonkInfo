@@ -52,3 +52,14 @@ public record struct QuestAssortUnlockSlim(
     MongoId TemplateId,
     int LoyaltyLevel
 );
+
+/// <summary>
+/// Conditions needed to unlock a quest (its AvailableForStart block).
+/// Zero/Empty means the requirement is not present.
+/// </summary>
+public record struct QuestUnlockRequirementSlim(
+    int PlayerLevel,
+    MongoId TraderId,
+    int TraderLoyalty,
+    ImmutableArray<MongoId> RequiredQuests
+);
