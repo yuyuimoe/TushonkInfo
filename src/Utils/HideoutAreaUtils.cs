@@ -1,8 +1,8 @@
-﻿using ItemInfo.Services;
+﻿using TushonkInfo.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 
-namespace ItemInfo.Utils;
+namespace TushonkInfo.Utils;
 
 [Injectable]
 public class HideoutAreaUtils(LocalizationService localizationService)

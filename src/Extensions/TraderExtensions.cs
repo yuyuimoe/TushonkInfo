@@ -1,9 +1,9 @@
 ﻿using System.Collections.Frozen;
-using ItemInfo.Caches.Models;
+using TushonkInfo.Caches.Models;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
-namespace ItemInfo.Extensions;
+namespace TushonkInfo.Extensions;
 
 public static class TraderExtensions
 {

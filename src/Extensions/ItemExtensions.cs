@@ -1,6 +1,6 @@
 ﻿using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
-namespace ItemInfo.Extensions;
+namespace TushonkInfo.Extensions;
 
 public static class ItemExtensions
 {

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace ItemInfo.Extensions;
+namespace TushonkInfo.Extensions;
 
 public static class DoubleExtensions
 {

@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
-using ItemInfo.Constants;
-using ItemInfo.Models;
+using TushonkInfo.Constants;
+using TushonkInfo.Models;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
@@ -11,7 +11,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
 
-namespace ItemInfo.Services;
+namespace TushonkInfo.Services;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.Database + 4)]
 public class LocalizationService(

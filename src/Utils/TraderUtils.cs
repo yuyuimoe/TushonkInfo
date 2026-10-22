@@ -1,9 +1,9 @@
 using System.Collections.Frozen;
-using ItemInfo.Caches.Models;
+using TushonkInfo.Caches.Models;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 
-namespace ItemInfo.Utils;
+namespace TushonkInfo.Utils;
 
 [Injectable]
 public class TraderUtils

@@ -3,7 +3,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
 
-namespace ItemInfo.Constants;
+namespace TushonkInfo.Constants;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.Database + 1)]
 public class ModPath(ModHelper modHelper) : IOnLoad

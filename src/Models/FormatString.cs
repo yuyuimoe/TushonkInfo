@@ -1,12 +1,12 @@
 using System.Collections.Frozen;
 using System.Text;
-using ItemInfo.Constants;
-using ItemInfo.Services;
-using ItemInfo.Utils;
+using TushonkInfo.Constants;
+using TushonkInfo.Services;
+using TushonkInfo.Utils;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 
-namespace ItemInfo.Models;
+namespace TushonkInfo.Models;
 
 public class FormatString(string template, LocalizationService localizationService)
 {

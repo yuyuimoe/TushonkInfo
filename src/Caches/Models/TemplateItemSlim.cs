@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
-namespace ItemInfo.Caches.Models;
+namespace TushonkInfo.Caches.Models;
 
 public record struct TemplateItemSlim(
     MongoId TemplateId,

@@ -1,4 +1,4 @@
-namespace ItemInfo.Constants;
+namespace TushonkInfo.Constants;
 
 public static class LocalizationTemplates
 {

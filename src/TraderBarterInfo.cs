@@ -1,7 +1,7 @@
 ﻿using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
-namespace ItemInfo;
+namespace TushonkInfo;
 
 public record TraderBarterScheme(int LoyaltyLevel, List<List<BarterScheme>> Barters);
 

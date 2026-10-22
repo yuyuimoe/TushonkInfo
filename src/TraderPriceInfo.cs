@@ -1,5 +1,5 @@
 ﻿using SPTarkov.Server.Core.Models.Common;
 
-namespace ItemInfo;
+namespace TushonkInfo;
 
 public record TraderPriceInfo(double Price, MongoId TraderId, string ItemParentId);

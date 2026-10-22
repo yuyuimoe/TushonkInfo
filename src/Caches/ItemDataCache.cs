@@ -1,10 +1,10 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using ItemInfo.Caches.Models;
-using ItemInfo.Extensions;
-using ItemInfo.Services;
-using ItemInfo.Utils;
+using TushonkInfo.Caches.Models;
+using TushonkInfo.Extensions;
+using TushonkInfo.Services;
+using TushonkInfo.Utils;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
@@ -14,7 +14,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
-namespace ItemInfo.Caches;
+namespace TushonkInfo.Caches;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.RagfairCallbacks + 65536)]
 public sealed class ItemDataCache(

@@ -1,7 +1,7 @@
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 
-namespace ItemInfo.Caches.Models;
+namespace TushonkInfo.Caches.Models;
 
 public record struct StageRequirementSlim(
     MongoId AreaId,

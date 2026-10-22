@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace ItemInfo;
+namespace TushonkInfo;
 
 public static partial class RegularExpressions
 {

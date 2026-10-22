@@ -1,8 +1,8 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using ItemInfo.Caches.Models;
-using ItemInfo.Services;
+using TushonkInfo.Caches.Models;
+using TushonkInfo.Services;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -13,7 +13,7 @@ using SPTarkov.Server.Core.Models.Spt.Hideout;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 
-namespace ItemInfo.Caches;
+namespace TushonkInfo.Caches;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.PostDBModLoader)]
 public sealed class HideoutCache(ISptLogger<HideoutCache> logger, DatabaseService db) : IOnLoad

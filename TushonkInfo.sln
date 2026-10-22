@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODT-ItemInfo-4.0", "ODT-ItemInfo-4.0.csproj", "{CE777B3E-319F-43A7-98C8-4E1D53BFCB61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TushonkInfo", "TushonkInfo.csproj", "{CE777B3E-319F-43A7-98C8-4E1D53BFCB61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

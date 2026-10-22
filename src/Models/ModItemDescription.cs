@@ -1,4 +1,4 @@
-﻿namespace ItemInfo.Models;
+﻿namespace TushonkInfo.Models;
 
 public class ModItemDescription
 {

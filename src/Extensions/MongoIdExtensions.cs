@@ -1,6 +1,6 @@
 using SPTarkov.Server.Core.Models.Common;
 
-namespace ItemInfo.Extensions;
+namespace TushonkInfo.Extensions;
 
 public static class MongoIdExtensions
 {

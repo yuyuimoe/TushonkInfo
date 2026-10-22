@@ -1,11 +1,11 @@
 using System.Collections.Frozen;
 using System.Globalization;
-using ItemInfo.Caches;
-using ItemInfo.Caches.Models;
-using ItemInfo.Constants;
-using ItemInfo.Extensions;
-using ItemInfo.Models;
-using ItemInfo.Services;
+using TushonkInfo.Caches;
+using TushonkInfo.Caches.Models;
+using TushonkInfo.Constants;
+using TushonkInfo.Extensions;
+using TushonkInfo.Models;
+using TushonkInfo.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -13,7 +13,7 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Utils;
 
-namespace ItemInfo.Utils;
+namespace TushonkInfo.Utils;
 
 [Injectable]
 public class TemplateItemUtils(

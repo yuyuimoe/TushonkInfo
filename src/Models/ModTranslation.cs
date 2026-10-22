@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ItemInfo.Models;
+namespace TushonkInfo.Models;
 
 public class ModTranslation
 {

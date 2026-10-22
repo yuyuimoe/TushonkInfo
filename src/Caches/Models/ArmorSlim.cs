@@ -1,7 +1,7 @@
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 
-namespace ItemInfo.Caches.Models;
+namespace TushonkInfo.Caches.Models;
 
 /// <summary>
 /// Armor material properties from globals.

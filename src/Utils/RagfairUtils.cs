@@ -5,7 +5,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 
-namespace ItemInfo.Utils;
+namespace TushonkInfo.Utils;
 
 [Injectable]
 public class RagfairUtils(ISptLogger<RagfairUtils> logger, RagfairPriceService ragfairPriceService)

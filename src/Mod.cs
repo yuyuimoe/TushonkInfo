@@ -1,14 +1,14 @@
 using System.Diagnostics;
-using ItemInfo.Caches;
-using ItemInfo.Constants;
-using ItemInfo.Services;
-using ItemInfo.Utils;
+using TushonkInfo.Caches;
+using TushonkInfo.Constants;
+using TushonkInfo.Services;
+using TushonkInfo.Utils;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Utils;
 
-namespace ItemInfo;
+namespace TushonkInfo;
 
 [Injectable(TypePriority = OnLoadOrder.PostSptModLoader + 1)]
 public class Mod(
@@ -25,7 +25,7 @@ public class Mod(
         var config = ConfigurationService.Config;
         if (config is null)
         {
-            logger.Error("[ItemInfo] Config was not loaded, skipping item descriptions");
+            logger.Error("[TushonkInfo] Config was not loaded, skipping item descriptions");
             return Task.CompletedTask;
         }
 
@@ -202,7 +202,7 @@ public class Mod(
 
         stopWatch.Stop();
         logger.Info(
-            $"[ItemInfo] Built {localeChanged.Count} item and {questDescriptions.Count} quest descriptions in {stopWatch.ElapsedMilliseconds}ms"
+            $"[TushonkInfo] Built {localeChanged.Count} item and {questDescriptions.Count} quest descriptions in {stopWatch.ElapsedMilliseconds}ms"
         );
         return Task.CompletedTask;
     }

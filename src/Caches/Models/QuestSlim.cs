@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using SPTarkov.Server.Core.Models.Common;
 
-namespace ItemInfo.Caches.Models;
+namespace TushonkInfo.Caches.Models;
 
 /// <summary>
 /// How the item is used to complete a quest.
@@ -20,7 +20,7 @@ public enum QuestItemRequirementKind : byte
 
 /// <summary>
 /// Item that a quest requires. The quest giver is resolved with
-/// <see cref="ItemInfo.Caches.QuestCache.GetQuestTrader"/>.
+/// <see cref="TushonkInfo.Caches.QuestCache.GetQuestTrader"/>.
 /// </summary>
 public record struct QuestItemRequirementSlim(
     MongoId QuestId,

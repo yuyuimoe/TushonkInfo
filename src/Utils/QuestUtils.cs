@@ -1,12 +1,12 @@
 using System.Collections.Immutable;
-using ItemInfo.Caches;
-using ItemInfo.Constants;
-using ItemInfo.Models;
-using ItemInfo.Services;
+using TushonkInfo.Caches;
+using TushonkInfo.Constants;
+using TushonkInfo.Models;
+using TushonkInfo.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 
-namespace ItemInfo.Utils;
+namespace TushonkInfo.Utils;
 
 [Injectable]
 public class QuestUtils(

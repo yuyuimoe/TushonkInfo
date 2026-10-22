@@ -1,8 +1,8 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using ItemInfo.Caches.Models;
-using ItemInfo.Extensions;
+using TushonkInfo.Caches.Models;
+using TushonkInfo.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
@@ -11,7 +11,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 
-namespace ItemInfo.Caches;
+namespace TushonkInfo.Caches;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.PostDBModLoader + 65540)]
 public sealed class QuestCache(ISptLogger<QuestCache> logger, DatabaseService db) : IOnLoad

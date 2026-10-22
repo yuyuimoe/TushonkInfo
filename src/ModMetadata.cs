@@ -1,11 +1,11 @@
 ﻿using SPTarkov.Server.Core.Models.Spt.Mod;
 
-namespace ItemInfo;
+namespace TushonkInfo;
 
 public record ModMetadata : AbstractModMetadata
 {
     public override string ModGuid { get; init; } = "moe.yuyui.iteminfo";
-    public override string Name { get; init; } = "ItemInfo";
+    public override string Name { get; init; } = "TushonkInfo";
     public override string Author { get; init; } = "yuyui.moe";
     public override List<string>? Contributors { get; init; }
     public override SemanticVersioning.Version Version { get; init; } = new("3.1.0");

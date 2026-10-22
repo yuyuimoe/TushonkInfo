@@ -1,6 +1,6 @@
 using System.Collections.Frozen;
 using System.Diagnostics;
-using ItemInfo.Services;
+using TushonkInfo.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
@@ -8,7 +8,7 @@ using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 
-namespace ItemInfo.Caches;
+namespace TushonkInfo.Caches;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.PostDBModLoader + 65538)]
 public sealed class LocaleCache(

@@ -1,9 +1,9 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using ItemInfo.Caches.Models;
-using ItemInfo.Extensions;
-using ItemInfo.Utils;
+using TushonkInfo.Caches.Models;
+using TushonkInfo.Extensions;
+using TushonkInfo.Utils;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
@@ -12,7 +12,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 
-namespace ItemInfo.Caches;
+namespace TushonkInfo.Caches;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.TraderCallbacks + 65536)]
 public sealed class TraderCache(

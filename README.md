@@ -1,4 +1,4 @@
-# ODT-ItemInfo
+# TushonkInfo
 Massive QOL Item Info mod for SPTarkov.
 
 The display language is set with `UserLocale` in `config/config.json` and works with every locale shipped in the game (en, ru, ch, cz, es, es-mx, fr, ge, hu, it, jp, kr, pl, po, sk, tu). Item, quest, trader and hideout area names come from the game locale, so they follow the same setting.

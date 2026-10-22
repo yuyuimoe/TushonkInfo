@@ -1,11 +1,11 @@
-using ItemInfo.Constants;
-using ItemInfo.Models;
+using TushonkInfo.Constants;
+using TushonkInfo.Models;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 
-namespace ItemInfo.Services;
+namespace TushonkInfo.Services;
 
 [Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.Database + 2)]
 public class ConfigurationService(ISptLogger<ConfigurationService> logger, JsonUtil jsonUtil)
