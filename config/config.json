@@ -10,7 +10,9 @@
 		"addFleaPrice": true,
 		"addItemValue": true
 	},
-	"BlacklistedTradersFromRarityCalc": ["579dc571d53a0658a154fbec"],
+	"BlacklistedTradersFromRarityCalc": [
+		"579dc571d53a0658a154fbec"
+	],
 	"RarityRecolor": {
 		"_description": "This feature clears and changes background color on EVERY item in the game based on MMO style rarity tier-list with colors that make actual sense. Tiers are based on trader level you can purchase or barter the item. Barters are considered +1 rarity level. If item is unbuyable, calculates rarity based on item in-game per-slot value and uses thresholds set in tiers config. Banned on flea market items are given highest rarity - overpowered. The tier list: Common (grey background, bought with level 1 traders OR under 10k) > Rare (blue, level 2 trades for currency and level 1 barters OR under 20k) > Epic (purple, level 3 and level 2 barters OR under 30k) > Legendary (dim yellow, level 4 and level 3 barters OR under 40k) > Uber (bright yellow, level 4 barters only OR under 60k) > UNOBTAINIUM (bright green, super valuable items worth over 60k per slot) > OP (bright red, banned on flea market) > CUSTOM (dim red, not used by default). Works for 95% of items well enough to be very much usable. Can add tier name to PricesInfo module.",
 		"enabled": true,
@@ -116,14 +118,14 @@
 		"enabled": true
 	},
 	"QuestInfo": {
-		"_description": "Adds information if the item needs to be handed in for a quest. Marks find in raid quest condition with a checkmark with an option to add this checkmark to an item name.",
-		"_example": "[CMS surgical kit] Found (✔) ×2 > Ambulance @ Jaeger",
+		"_description": "Adds information if the item needs to be handed in for a quest. Markers come from the Markers section; FIRinName appends the foundInRaid marker to the item name.",
+		"_example": "[CMS surgical kit] » FIR ×2 > Ambulance @ Jaeger",
 		"enabled": true,
 		"FIRinName": true
 	},
 	"HideoutInfo": {
 		"_description": "Shows if item is needed for hideout construcion.",
-		"_example": "[Secure Flash drive] Need ×3 > Intelligence Center lv.2",
+		"_example": "[Secure Flash drive] » ×3 > Intelligence Center lv.2",
 		"enabled": true
 	},
 	"BarterResourceInfo": {
@@ -148,5 +150,14 @@
 		"_description": "",
 		"enabled": true
 	},
-	"dummyend": true
+	"dummyend": true,
+	"Markers": {
+		"_description": "Language neutral markers used by the quest/hideout lines and item names. Anything works here, including icons - set whatever your font renders.",
+		"_example": "Found in raid handover: '» FIR ×2 > Ambulance @ Jaeger' / unlock: '↺ Ambulance @ Jaeger lv.2'",
+		"requirement": "»",
+		"place": "»",
+		"improvement": "IMPROVEMENT",
+		"foundInRaid": "FIR",
+		"unlock": "↺"
+	}
 }

@@ -199,6 +199,22 @@ public class ModConfig
 		public bool Enabled { get; set; }
 	}
 	
+	[JsonPropertyName("Markers")]
+	public ModMarkers Markers { get; set; } = new();
+	public class ModMarkers
+	{
+		[JsonPropertyName("requirement")]
+		public string Requirement { get; set; } = "»";
+		[JsonPropertyName("place")]
+		public string Place { get; set; } = "»";
+		[JsonPropertyName("improvement")]
+		public string Improvement { get; set; } = "IMPROVEMENT";
+		[JsonPropertyName("foundInRaid")]
+		public string FoundInRaid { get; set; } = "FIR";
+		[JsonPropertyName("unlock")]
+		public string Unlock { get; set; } = "↺";
+	}
+
 	[JsonPropertyName("BlacklistedTradersFromRarityCalc")]
 	public List<MongoId> BlacklistedTradersFromRarityCalc { get; set; }
 }
