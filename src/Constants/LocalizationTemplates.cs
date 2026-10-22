@@ -1,4 +1,4 @@
-﻿namespace ItemInfo.Constants;
+namespace ItemInfo.Constants;
 
 public static class LocalizationTemplates
 {
@@ -7,33 +7,52 @@ public static class LocalizationTemplates
     public const string CurrencyDollars = "$";
     public const string CurrencyGpCoin = "GP";
 
-    public const string TotalBarterFleaPrice = "| Σ ≈ (totalPrice)₽ {Fleaprice}";
-    public const string DeltaBarterFleaPrice = "| Δ ≈ (diffPrice)₽ {Fleaprice}";
+    // Prices
+    public const string PriceFlea = "{Fleaprice}: (price)₽";
+    public const string PriceFleaBanned = "{Fleaprice}: {BANNED}";
+    public const string PriceItemValue = "{ItemValue}: (price)₽";
+    public const string PriceTrader = "{Valuation1}(traderName){Valuation2}: (price)₽";
+    public const string PriceUnknownTrader = "{Valuation1}{UNKNOWN}{Valuation2}: (price)₽";
+
+    // Barters
+    public const string TotalBarterFleaPrice = "| Σ ≈ (totalPrice)₽";
+    public const string DeltaBarterFleaPrice = "| Δ ≈ (diffPrice)₽";
 
     public const string BuyBarterItem =
-        "{Bought} (parent) {at} (traderName) {lv}(loyaltyLevel) | (extraItems) (totalBarterFleaPrice) (deltaBarterPrice)";
+        "{Bought}(parent) {at} (traderName) {lv}(loyaltyLevel) < (extraItems) (totalBarterFleaPrice) (deltaBarterPrice)";
     public const string SellBarterItem =
-        "{Traded} (count)x {at} (traderName) {lv}(loyaltyLevel) => (itemName) | (extraItems) (totalBarterFleaPrice) (deltaBarterPrice)";
-    public const string QuestRequiredItem =
-        "{Found} (count)x (fir) => (questName) {@} (traderName)";
+        "{Traded} ×(count) {at} (traderName) {lv}(loyaltyLevel) > (itemName) < … + (extraItems) (totalBarterFleaPrice) (deltaBarterPrice)";
 
+    // Quests
+    /// <summary>
+    /// (mark) and (fir) are language neutral markers coming from the config file.
+    /// </summary>
+    public const string QuestRequirement = "(mark)(fir)×(count) > (questName) @ (traderName)";
     public const string QuestRewardItem =
-        "↺ (questName) (questGiver) {@} {traderName} {lv}(loyaltyLevel) ..> (extraItems)";
+        "(mark)(questName) (questGiver) @ (traderName) {lv}(loyaltyLevel)";
 
+    // Hideout
     public const string HideoutAreaLevel = "(area) {lv}(requiredLevel)";
-    public const string HideoutCraftingCount = "(itemShortName) (count)x + ";
-    public const string HideoutResourcePercentage = "(itemShortName) (count)x% + ";
+    public const string HideoutAreaRequirement = "(mark)×(count) > (area) {lv}(level)";
+    public const string HideoutStageImprovement = "(mark)×(count) > (area) (improvement)";
 
+    public const string HideoutCraftingCount = "(itemShortName) ×(count) + ";
+    public const string HideoutResourcePercentage = "(itemShortName) ×(percent)% + ";
     public const string HideoutCraftingMultipleItems = "{peritem}";
 
     public const string HideoutCraftingResult =
-        "{Crafted} (count)x {@} (area) (quest) <= (component) | Σ (recipe) ≈ (price) ₽";
-
-    public const string HideoutCraftingToolRequirement =
-        "{Tool} (count)x => (item) (count)x @ (area) (quest) (extra)";
-
+        "{Crafted} ×(count) @ (area)(quest) < (components) | Σ(perItem) ≈ (price)₽";
+    public const string HideoutCraftingMaterial =
+        "(role) ×(count) > (item) ×(amount) @ (area)(quest) < … + (components) | Δ ≈ (profit)₽";
     public const string HideoutBitcoinInformation =
-        "{Crafted} {@} (area) / GPU: 1x (gpu1) | 10x (gpu10) | 25x (gpu25) | 50x (gpu50)";
+        "{Crafted} @ (area) | GPU: 1× (gpu1), 10× (gpu10), 25× (gpu25), 50× (gpu50)";
 
-    public const string HideoutAreaRequirement = "{Need} (count)x => (area) {lv}(level)";
+    // Gear
+    public const string SlotEfficiency = "{Slotefficiency}: ×(ratio) ((slots)/(cells))";
+    public const string HeadsetInfo =
+        "{AmbientVolume}: (ambient)db | {Boost}: +(boost)db | {Distortion}: (distortion)%";
+
+    public const string ArmorClassInfo = "{Armorclass}: (armorClass) | ";
+    public const string ArmorDurability =
+        "(classInfo){Effectivedurability}: (effectiveDurability) ({Max}: (maxDurability) x (material): (multiplier)) | {Repairdegradation}: (minRepair)% - (maxRepair)%";
 }
