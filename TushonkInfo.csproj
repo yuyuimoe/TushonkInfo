@@ -20,11 +20,6 @@
 
   <ItemGroup>
     <Compile Remove="src\OldAssUtils.cs" />
-    <Resource Include="src\OldAssUtils.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="src\Expressions\" />
   </ItemGroup>
 
   <PropertyGroup>
