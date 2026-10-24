@@ -3,7 +3,7 @@ Massive QOL Item Info mod for SPTarkov.
 
 The display language is set with `UserLocale` in `config/config.json` and works with every locale shipped in the game (en, ru, ch, cz, es, es-mx, fr, ge, hu, it, jp, kr, pl, po, sk, tu). Item, quest, trader and hideout area names come from the game locale, so they follow the same setting.
 
-> **3.1.0 status:** rewritten for SPT 4.0. Current modules: prices, barters, barter resources, production, crafting materials, hideout, quests (item requirements + quest links), armor, containers and headsets. Rarity Recolor, Mark Valuable Items, Bullet Stats In Name, Spawn Info and Advanced Ammo Info are not ported yet and their config sections are ignored.
+> **3.1.1 status:** rewritten for SPT 4.0. Current modules: prices, barters, barter resources, production, crafting materials, hideout, quests (item requirements + quest links), armor, containers and headsets. Rarity Recolor, Mark Valuable Items, Bullet Stats In Name, Spawn Info and Advanced Ammo Info are not ported yet and their config sections are ignored.
 
 
 # Features: 
