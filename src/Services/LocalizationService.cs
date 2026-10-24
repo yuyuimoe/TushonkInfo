@@ -21,7 +21,11 @@ public class LocalizationService(
     DatabaseService dbService
 ) : IOnLoad
 {
-    private static ModTranslation? AllLocales { get; set; }
+    /// <summary>
+    /// Mod translations live in the game locale database under this prefix, so they
+    /// cannot collide with game keys.
+    /// </summary>
+    private const string KeyPrefix = "TushonkInfo.";
 
     /// <summary>
     /// Game locale database per language, fetched once. Kept as a map because
@@ -44,43 +48,57 @@ public class LocalizationService(
             return;
         }
 
-        AllLocales = translationFile;
+        var languages = translationFile
+            .RawLanguages.Where(kvp => kvp.Key != "debug")
+            .ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.Deserialize<Dictionary<string, string>>() ?? new()
+            );
 
-        foreach (
-            var (lang, langdef) in translationFile.RawLanguages.Where(kvp => kvp.Key != "debug")
-        )
+        languages.TryGetValue("en", out var english);
+
+        // https://github.com/sp-tarkov/server-mod-examples/blob/main/25AddCustomLocales/AddCustomLocales.cs
+        foreach (var (lang, gameLocale) in dbService.GetLocales().Global)
         {
-            Dictionary<string, string> deserializedLangDef =
-                langdef.Deserialize<Dictionary<string, string>>() ?? new();
-            AllLocales.Language.Add(lang, deserializedLangDef);
+            // Missing keys fall back to english here, once, instead of on every lookup
+            var translations = new Dictionary<string, string>();
+            foreach (var source in new[] { english, languages.GetValueOrDefault(lang) })
+            {
+                foreach (var (key, value) in source ?? [])
+                {
+                    if (!string.IsNullOrWhiteSpace(key))
+                    {
+                        translations[KeyPrefix + key] = value;
+                    }
+                }
+            }
+
+            gameLocale.AddTransformer(l =>
+            {
+                foreach (var (key, value) in translations)
+                {
+                    l[key] = value;
+                }
+                return l;
+            });
         }
     }
 
     /// <summary>
-    /// Mod translation for a key: user locale first, then english, then the key itself.
+    /// Mod translation for a key: user locale first, then english.
     /// </summary>
     public bool TryGetKey(string key, out string localized)
     {
-        if (AllLocales is null)
-        {
-            localized = key;
-            return false;
-        }
-
         var userLocale = GetUserLocale;
-        if (
-            AllLocales.Language.TryGetValue(userLocale, out var locale)
-            && locale.TryGetValue(key, out var value)
-        )
+        var prefixedKey = KeyPrefix + key;
+
+        if (GetLocaleDb(userLocale).TryGetValue(prefixedKey, out var value))
         {
             localized = value;
             return true;
         }
 
-        if (
-            AllLocales.Language.TryGetValue("en", out var english)
-            && english.TryGetValue(key, out var englishValue)
-        )
+        if (userLocale != "en" && GetLocaleDb("en").TryGetValue(prefixedKey, out var englishValue))
         {
             logger.Debug($"Missing key {key} for locale {userLocale}, using english");
             localized = englishValue;
@@ -131,39 +149,21 @@ public class LocalizationService(
 
     public string GetTranslation(string key, string lang)
     {
-        /*
-         * TODO: Remove this code. SPT has support for custom locales.
-         * https://github.com/sp-tarkov/server-mod-examples/blob/main/25AddCustomLocales/AddCustomLocales.cs
-         */
+        var prefixedKey = KeyPrefix + key;
 
-        if (AllLocales is null)
+        if (GetLocaleDb(lang).TryGetValue(prefixedKey, out var value))
         {
-            return key;
+            return value;
         }
 
-        string? name;
-        if (lang != "en" && AllLocales.Language.ContainsKey(lang))
+        if (lang != "en" && GetLocaleDb("en").TryGetValue(prefixedKey, out var englishValue))
         {
-            if (!AllLocales.Language[lang].TryGetValue(key, out name))
-            {
-                logger.Debug(
-                    $"Failed to find key {key} for locale {lang}. Falling back to english"
-                );
-                return GetTranslation(key, "en");
-            }
-
-            return name;
+            logger.Debug($"Failed to find key {key} for locale {lang}. Falling back to english");
+            return englishValue;
         }
 
-        if (!AllLocales.Language["en"].TryGetValue(key, out name))
-        {
-            logger.Debug(
-                "Failed to find key for locale in English. Falling back to debug information"
-            );
-            return "GetLocalization() unknown locale " + key;
-        }
-
-        return name;
+        logger.Debug($"Failed to find key {key} for locale {lang} and english");
+        return key;
     }
 
     /// <summary>

@@ -10,7 +10,4 @@ public class ModTranslation
 	
     [JsonExtensionData]
     public Dictionary<string, JsonElement> RawLanguages { get; set; } = new();
-	
-    [JsonIgnore]
-    public Dictionary<string, Dictionary<string, string>> Language { get; set; } = new();
 }
