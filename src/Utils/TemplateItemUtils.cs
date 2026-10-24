@@ -46,10 +46,21 @@ public class TemplateItemUtils(
             ? name
             : traderId.ToString() ?? string.Empty;
 
-    private string GetShortName(MongoId templateId) =>
-        ShortNames.TryGetValue(templateId, out var name)
-            ? name
-            : templateId.ToString() ?? string.Empty;
+    /// <summary>
+    /// Items added by mods that load after the locale cache was built are not in
+    /// <see cref="ShortNames"/>, so fall back to a live locale lookup, then the raw id.
+    /// </summary>
+    private string GetShortName(MongoId templateId)
+    {
+        if (ShortNames.TryGetValue(templateId, out var name))
+        {
+            return name;
+        }
+
+        var id = templateId.ToString() ?? string.Empty;
+        var live = localizationService.GetItemShortName(templateId, Locale);
+        return live.StartsWith(id) ? id : live;
+    }
 
     private (double price, double profit) CalculateBarterTotalPrice(in TraderBarterInfo barterInfo)
     {
@@ -77,15 +88,10 @@ public class TemplateItemUtils(
         return (barterPrice, profit);
     }
 
-    private string FormatItemRequirements(
-        in List<List<BarterScheme>> barters,
-        FrozenDictionary<MongoId, string> templateShortNames
-    ) =>
+    private string FormatItemRequirements(in List<List<BarterScheme>> barters) =>
         string.Join(
             ", ",
-            barters.SelectMany(x =>
-                x.Select(y => $"{y.Count ?? 1d}x {templateShortNames[y.Template]}")
-            )
+            barters.SelectMany(x => x.Select(y => $"{y.Count ?? 1d}x {GetShortName(y.Template)}"))
         );
 
     private string FormatBarterPrice(
@@ -281,16 +287,11 @@ public class TemplateItemUtils(
             return [];
         }
 
-        var templateShortNames = localeCache.TemplateShortNames[Locale];
-
         var returnList = new List<string>();
 
         foreach (var barterInfo in barterInfoList)
         {
-            var requiredItems = FormatItemRequirements(
-                barterInfo.BarterScheme!.Barters,
-                templateShortNames
-            );
+            var requiredItems = FormatItemRequirements(barterInfo.BarterScheme!.Barters);
 
             var buyBarterTemplate = new FormatString(
                 LocalizationTemplates.BuyBarterItem,
@@ -302,7 +303,7 @@ public class TemplateItemUtils(
 
             var parentText = barterInfo.AssortParentId is "" or "hideout"
                 ? string.Empty
-                : $" ∈ {templateShortNames[barterInfo.AssortParentId]}";
+                : $" ∈ {GetShortName(barterInfo.AssortParentId)}";
 
             buyBarterTemplate.AddData("parent", parentText);
 
@@ -348,8 +349,6 @@ public class TemplateItemUtils(
             return [];
         }
 
-        var templateShortNames = localeCache.TemplateShortNames[Locale];
-
         var returnList = new List<string>();
 
         foreach (var barterInfo in barterInfoList)
@@ -373,11 +372,11 @@ public class TemplateItemUtils(
 
             sellBarterTemplate.AddData("traderName", GetTraderName(barterInfo.TraderId));
             sellBarterTemplate.AddData("loyaltyLevel", barterInfo.BarterScheme!.LoyaltyLevel);
-            sellBarterTemplate.AddData("itemName", templateShortNames[barterInfo.TemplateId]);
+            sellBarterTemplate.AddData("itemName", GetShortName(barterInfo.TemplateId));
             sellBarterTemplate.AddData("count", matchingCount.Value);
             sellBarterTemplate.AddData(
                 "extraItems",
-                FormatItemRequirements(barterInfo.BarterScheme!.Barters, templateShortNames)
+                FormatItemRequirements(barterInfo.BarterScheme!.Barters)
             );
 
             if (CalculateBarterTotalPrice(barterInfo) is (var price and > 0, var profit))

@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Services;
 
 namespace TushonkInfo.Caches;
 
-[Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.PostDBModLoader + 65538)]
+[Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.RagfairCallbacks + 65537)]
 public sealed class LocaleCache(
     ISptLogger<LocaleCache> logger,
     DatabaseService db,
